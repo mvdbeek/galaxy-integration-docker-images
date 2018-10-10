@@ -23,7 +23,7 @@ This development container will create an admin user and three users for testing
 
 ### To run the container
 
-  > docker run -h docker.example.com \
+  > docker run -h localhost \
     -p 10022:22     \ # SSHD, SFTP
     --rm -d --name slurm \
     agaveapi/slurm
@@ -36,12 +36,12 @@ You will need to create an interactive session in order to run jobs in this cont
 
 * First, you can start a container with the default command and ssh in.
 
-  > docker run -h docker.example.com -p 10022:22 --rm -d --name slurm agaveapi/slurm
-  > ssh -p 10022 testuser@docker.example.com
+  > docker run -h localhost -p 10022:22 --rm -d --name slurm agaveapi/slurm
+  > ssh -p 10022 testuser@localhost
 
 * Second, you can run an interactive container and start the services yourself.
 
-  > docker run -h docker.example.com -p 10022:22 --rm -d --name slurm agaveapi/slurm bash
+  > docker run -h localhost -p 10022:22 --rm -d --name slurm agaveapi/slurm bash
   bash-4.1# /usr/bin/supervisord &
 
 In either situation, once you have a session in the container, you can submit jobs using the `sbatch` command. A test script is included in the image at `/home/testuser/slurm.submit`. You can submit this script to verify the
