@@ -29,8 +29,8 @@ WORKDIR /usr/local
 
 # Pull torque
 RUN touch /var/lib/rpm/* && yum update -y nss
-RUN curl -o v5.1.1.tar.gz -L https://github.com/adaptivecomputing/torque/archive/v5.1.1.tar.gz && tar -xvzf v5.1.1.tar.gz
-WORKDIR /usr/local/torque-5.1.1
+RUN curl -o torque.tar.gz -L https://github.com/adaptivecomputing/torque/archive/6.1.2.tar.gz && tar -xvzf torque.tar.gz
+WORKDIR /usr/local/torque-6.1.2
 
 # Build Torque
 RUN ./autogen.sh
@@ -43,14 +43,14 @@ RUN cp contrib/init.d/pbs_server /etc/init.d/pbs_server
 RUN cp contrib/init.d/pbs_sched /etc/init.d/pbs_sched
 RUN ldconfig
 
-# Configure Torque
-RUN echo "localhost" > /var/spool/torque/server_name
-RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/torque.conf
-RUN ldconfig
-ENV HOSTNAME localhost
+# # Configure Torque
+# RUN echo "localhost" > /var/spool/torque/server_name
+# RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/torque.conf
+# RUN ldconfig
+# ENV HOSTNAME localhost
 
 RUN cat /etc/hosts
-ADD torque/torque.setup /usr/local/torque-5.1.1/torque.setup
+RUN sed -i.bak 's/pbs_server -t/pbs_server -f -t/g' torque.setup
 RUN trqauthd start && \
     ./torque.setup root localhost && \
     pbs_mom && pbs_sched && \
@@ -62,8 +62,8 @@ RUN trqauthd start && \
     qmgr -c 'set queue batch resources_default.nodes = 1' && \
     qmgr -c 'set server default_queue = debug'
 
-RUN echo "localhost np=1" >> /var/spool/torque/server_priv/nodes
-RUN echo "docker np=1" >> /var/spool/torque/server_priv/nodes
+RUN mkdir /etc/torque/ && echo localhost > /etc/torque/server_name
+RUN echo "localhost np=1" > /var/spool/torque/server_priv/nodes
 RUN printf "\$pbsserver localhost" >> /var/spool/torque/mom_priv/config
 
 # Add in a test submit script
