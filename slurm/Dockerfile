@@ -17,9 +17,9 @@
 #
 ######################################################
 
-FROM agaveapi/centos-base
+FROM mvdbeek/centos-base
 
-MAINTAINER Marius van den Beek <m.vandenbeek@gmail.com>
+MAINTAINER Marius van den Beek <marius@galaxyproject.org>
 
 # Add slurm user
 RUN adduser slurm && \
@@ -30,8 +30,9 @@ ADD ssh/id_rsa.pub /home/slurm/.ssh/authorized_keys
 USER root
 
 # Install slurm
-RUN touch /var/lib/rpm/* && yum update -y nss
-RUN touch /var/lib/rpm/* && yum -y install gcc gcc-g++ make munge munge-devel httpd bzip2 vim-minimal tar perl git
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+RUN yum install -y rpm-build gcc openssl openssl-devel pam-devel numactl numactl-devel hwloc lua readline-devel ncurses-devel libibmad libibumad munge make git
+RUN dnf --enablerepo=powertools install -y munge-devel
 
 # Configure munge
 RUN create-munge-key
@@ -40,7 +41,7 @@ RUN create-munge-key
 WORKDIR /usr/local
 RUN git clone https://github.com/SchedMD/slurm.git
 WORKDIR /usr/local/slurm
-RUN git checkout tags/slurm-14-03-9-1
+RUN git checkout tags/slurm-21-08-5-1
 
 RUN ./configure --prefix=/usr --sysconfdir=/etc/sysconfig/slurm --with-mysql_config=/usr/local/bin
 RUN make
@@ -48,12 +49,9 @@ RUN make install
 RUN mkdir -p /etc/sysconfig/slurm
 RUN cp etc/init.d.slurm /etc/init.d/slurmd
 RUN chmod +x /etc/init.d/slurmd
-RUN cp -rf doc/html /var/www/html/slurm
-RUN chown -R apache:apache /var/www/html/slurm
 
 RUN chown -R root:root /var/log/munge
 RUN chown -R root:root /var/lib/munge
-RUN mkdir /var/run/munge
 RUN chown -R root:root /var/run/munge
 RUN chown -R root:root /etc/munge
 
@@ -80,4 +78,4 @@ RUN mkdir /var/log/supervisor
 RUN chmod -R 777 /var/log/supervisor
 
 EXPOSE 10389 22 6817 6818
-CMD /usr/bin/supervisord
+CMD /usr/local/bin/supervisord
