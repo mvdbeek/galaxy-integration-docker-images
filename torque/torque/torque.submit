@@ -1,9 +1,0 @@
-#!/bin/bash
-#PBS -l walltime=00:1:00
-#PBS -l nice=19
-#PBS -q debug
-
-date
-hostname
-sleep 5
-date
