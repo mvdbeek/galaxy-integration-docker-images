@@ -15,6 +15,10 @@ PBS_SCP=/bin/scp
 EOT
 
 /opt/pbs/libexec/pbs_init.d start
+sleep 1s
+/opt/pbs/bin/qmgr -c  "create node $HOST"
+/opt/pbs/bin/qmgr -c "create queue workqueue queue_type=e,enabled=t,started=t"
+/opt/pbs/bin/qmgr -c "set server default_queue = workqueue"
 
 # Run whatever the user wants to
 exec "$@"

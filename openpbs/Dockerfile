@@ -34,7 +34,9 @@ WORKDIR /usr/local/openpbs_20.0.1.centos_8/
 RUN rpm -Uvh --nodeps openpbs-client-20.0.1-0.x86_64.rpm openpbs-execution-20.0.1-0.x86_64.rpm openpbs-server-20.0.1-0.x86_64.rpm
 
 # Add entrypoint script to set the current hostname so the scheduler can communicat
+RUN /opt/pbs/libexec/pbs_init.d start ||  /opt/pbs/libexec/pbs_init.d stop
 ADD docker_entrypoint.sh /docker_entrypoint.sh
+WORKDIR /
 
 ENTRYPOINT [ "/docker_entrypoint.sh" ]
 EXPOSE 10389 22 9618
