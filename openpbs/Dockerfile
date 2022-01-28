@@ -4,7 +4,7 @@
 # Tag: mvdbeek/galaxy-integration-docker-images:torque-22.01
 #
 # This container provides a standard pbs controller
-# and worker created on top of the agaveapi/centos-base
+# and worker created on top of the mvdbeek/centos-base
 # image. Nothing special here.
 #
 # Usage:
@@ -12,7 +12,7 @@
 #            -p 10022:22                  \ # SSHD, SFTP
 #            -p 9618:9618                 \ # PBS
 #            --privileged
-#            agaveapi/torque
+#            mvdbeek/galaxy-integration-docker-images:openpbs-22.01
 #
 # https://github.com/mvdbeek/galaxy-integration-docker-images
 #

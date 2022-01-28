@@ -3,18 +3,13 @@
 # Galaxy DRM Base Image
 # Based on agaveapi/centos-base
 #
-# This container creates three users (testuser, testotheruser,
-# and testshareuser) that have a common ssh key and passwords
-# equal to their username. These users are used for all testing
-# in the Agave API. A SSH server and supervisord are installed.
-# This constitues the base image for all other Agave containers.
+# This container creates a testuser user with a ssh key and password
+# equal to the username. A SSH server and supervisord are installed.
 #
 # Usage:
 # docker run -v docker.example.com -i     \
 #            -p 10022:22                  \ # SSHD, SFTP
 #            mvdbeek/centos-base
-#
-# https://bitbucket.org/taccaci/agave-environment
 #
 ######################################################
 
@@ -32,20 +27,6 @@ RUN adduser "testuser" -m && \
 USER testuser
 RUN mkdir /home/testuser/.ssh
 ADD id_rsa.pub /home/testuser/.ssh/authorized_keys
-USER root
-
-RUN adduser "testshareuser" -m && \
-    echo "testshareuser:testshareuser" | chpasswd
-USER testshareuser
-RUN mkdir /home/testshareuser/.ssh
-ADD id_rsa.pub /home/testshareuser/.ssh/authorized_keys
-USER root
-
-RUN adduser "testotheruser" -m && \
-    echo "testotheruser:testotheruser" | chpasswd
-USER testotheruser
-RUN mkdir /home/testotheruser/.ssh
-ADD id_rsa.pub /home/testotheruser/.ssh/authorized_keys
 USER root
 
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config

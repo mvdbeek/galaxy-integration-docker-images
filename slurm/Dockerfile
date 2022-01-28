@@ -4,16 +4,14 @@
 # Tag: agaveapi/slurm
 #
 # This container provides a standard Slurm controller
-# and worker created on top of the agaveapi/centos-base
+# and worker created on top of the mvdbeek/centos-base
 # image. Nothing special here.
 #
 # Usage:
 # docker run -h docker.example.com -i -t  \
 #            -p 10022:22                  \ # SSHD, SFTP
 #            -p 9618:9618                 \ # Slurm
-#            --rm agaveapi/slurm
-#
-# https://bitbucket.org/taccaci/agave-environment
+#            --rm mvdbeek/galaxy-integration-docker-images:slurm-22.01
 #
 ######################################################
 
